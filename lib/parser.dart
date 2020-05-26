@@ -54,22 +54,6 @@ class Parser {
       ..name = _getPascalCaseClassName(name)
       ..methods = _buildMethods(topLevel)
       ..methods.add(new Method((b) => b
-        ..name = 'toJson'
-        ..returns = new Reference('String')
-        ..body = new Code(
-            'return json.encode(serializers.serializeWith(${_getPascalCaseClassName(
-                name)}.serializer, this));')))
-      ..methods.add(new Method((b) => b
-        ..name = 'fromJson'
-        ..static = true
-        ..requiredParameters.add(new Parameter((b) => b
-          ..name = 'jsonString'
-          ..type = new Reference('String')))
-        ..returns = new Reference(_getPascalCaseClassName(name))
-        ..body = new Code(
-            'return serializers.deserializeWith(${_getPascalCaseClassName(
-                name)}.serializer, json.decode(jsonString));')))
-      ..methods.add(new Method((b) => b
         ..type = MethodType.getter
         ..name = 'serializer'
         ..static = true
@@ -88,7 +72,6 @@ class Parser {
     String classString = topLevelClass.accept(new DartEmitter()).toString();
 
     String header = """
-      library ${new ReCase(name).snakeCase};
       import 'dart:convert';
       
       import 'package:built_collection/built_collection.dart';
